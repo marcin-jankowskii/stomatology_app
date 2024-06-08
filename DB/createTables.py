@@ -4,7 +4,7 @@ from psycopg2 import sql
 host = "localhost"
 dbname = "dentistApp"
 user = "postgres"
-password = "ZAQ!2wsx"
+password = "admin"
 
 
 conn = psycopg2.connect(

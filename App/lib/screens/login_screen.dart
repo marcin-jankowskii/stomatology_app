@@ -1,5 +1,6 @@
-
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'registration_screen.dart';
 import 'appointment_screen.dart';
 
@@ -14,6 +15,37 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  Future<void> loginUser(String email, String password) async {
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:5000/login'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'email': email,
+        'password': password,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      Navigator.pushNamed(context, AppointmentScreen.id);
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Error'),
+          content: Text('Invalid credentials'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             TextField(
               controller: usernameController,
-              decoration: InputDecoration(hintText: 'Username'),
+              decoration: InputDecoration(hintText: 'Email'),
             ),
             TextField(
               controller: passwordController,
@@ -36,8 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
-                // Implement login logic
-                Navigator.pushNamed(context, AppointmentScreen.id);
+                loginUser(usernameController.text, passwordController.text);
               },
               child: Text('Login'),
             ),

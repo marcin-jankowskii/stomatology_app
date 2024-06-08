@@ -32,4 +32,4 @@ def add_dentist(dbname, user, password, host):
         cur.close()
         conn.close()
 
-add_dentist('dentistApp', 'postgres', 'ZAQ!2wsx', 'localhost')
+add_dentist('dentistApp', 'postgres', 'admin', 'localhost')

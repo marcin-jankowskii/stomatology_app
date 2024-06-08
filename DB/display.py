@@ -35,4 +35,4 @@ def display_dentists(dbname, user, password, host):
         cur.close()
         conn.close()
 
-display_dentists('dentistApp', 'postgres', 'ZAQ!2wsx', 'localhost')
+display_dentists('dentistApp', 'postgres', 'admin', 'localhost')
