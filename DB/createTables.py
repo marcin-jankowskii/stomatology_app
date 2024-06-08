@@ -42,7 +42,9 @@ commands = [
         patient_id INT REFERENCES Users(user_id),
         dentist_id INT REFERENCES Users(user_id),
         appointment_date TIMESTAMP NOT NULL,
-        status VARCHAR(50) NOT NULL CHECK (status IN ('zaplanowana', 'odbyta', 'odwołana'))
+        status VARCHAR(50) NOT NULL CHECK (status IN ('zaplanowana', 'odbyta, nieopłacona', 'odbyta, opłacona', 'odwołana')),
+        description TEXT,
+        amount DECIMAL(10, 2)
     )
     """,
     """
@@ -61,9 +63,17 @@ commands = [
         payment_date TIMESTAMP NOT NULL,
         status VARCHAR(50) NOT NULL CHECK (status IN ('opłacona', 'nieopłacona'))
     )
+    """,
+    """
+    ALTER TABLE Appointments ADD COLUMN IF NOT EXISTS amount DECIMAL(10, 2);
+    """,
+    """
+    ALTER TABLE Appointments DROP CONSTRAINT IF EXISTS appointments_status_check;
+    """,
+    """
+    ALTER TABLE Appointments ADD CONSTRAINT appointments_status_check CHECK (status IN ('zaplanowana', 'odbyta, nieopłacona', 'odbyta, opłacona', 'odwołana'));
     """
 ]
-
 
 for command in commands:
     cur.execute(command)

@@ -21,7 +21,7 @@ def add_dentist(dbname, user, password, host):
         INSERT INTO Users (email, password, role, personal_info_id)
         VALUES (%s, %s, %s, %s);
         """
-        cur.execute(insert_user, ('jan.kowalski@example.com', 'bezpieczne_haslo123', 'dentysta', personal_info_id))
+        cur.execute(insert_user, ('1', '1', 'dentysta', personal_info_id))
 
         conn.commit()
         print("Dentysta został pomyślnie dodany do bazy danych.")
