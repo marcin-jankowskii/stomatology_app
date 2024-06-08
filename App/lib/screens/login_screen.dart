@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'registration_screen.dart';
-import 'appointment_screen.dart';
+import 'patient_menu_screen.dart';
+import 'dentist_menu_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -12,12 +13,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   Future<void> loginUser(String email, String password) async {
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:5000/login'),
+      Uri.parse('http://10.0.2.2:5000/login'),  // Użyj '10.0.2.2' dla emulatora Androida
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -28,7 +29,23 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (response.statusCode == 200) {
-      Navigator.pushNamed(context, AppointmentScreen.id);
+      final responseBody = jsonDecode(response.body);
+      final userId = responseBody['user_id'];
+      final role = responseBody['role'];
+      
+      if (role == 'pacjent') {
+        Navigator.pushReplacementNamed(
+          context,
+          PatientMenuScreen.id,
+          arguments: {'userId': userId, 'role': role},
+        );
+      } else if (role == 'dentysta') {
+        Navigator.pushReplacementNamed(
+          context,
+          DentistMenuScreen.id,
+          arguments: {'userId': userId, 'role': role},
+        );
+      }
     } else {
       showDialog(
         context: context,
@@ -57,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           children: [
             TextField(
-              controller: usernameController,
+              controller: emailController,
               decoration: InputDecoration(hintText: 'Email'),
             ),
             TextField(
@@ -68,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
             SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
-                loginUser(usernameController.text, passwordController.text);
+                loginUser(emailController.text, passwordController.text);
               },
               child: Text('Login'),
             ),

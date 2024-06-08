@@ -1,11 +1,10 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'login_screen.dart';
+import 'dart:convert';
 
 class RegistrationScreen extends StatefulWidget {
   static const String id = 'registration_screen';
-  
+
   @override
   _RegistrationScreenState createState() => _RegistrationScreenState();
 }
@@ -17,32 +16,33 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
+  String role = 'pacjent';
 
-  Future<void> registerUser(String email, String password, String firstName, String lastName, String phoneNumber, String address) async {
+  Future<void> registerUser() async {
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:5000/register'),  // Użyj '10.0.2.2' dla emulatora Androida
+      Uri.parse('http://10.0.2.2:5000/register'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        'email': email,
-        'password': password,
-        'role': 'pacjent',  // Zakładam, że użytkownik rejestruje się jako pacjent
-        'first_name': firstName,
-        'last_name': lastName,
-        'phone_number': phoneNumber,
-        'address': address,
+        'email': emailController.text,
+        'password': passwordController.text,
+        'role': role,
+        'first_name': firstNameController.text,
+        'last_name': lastNameController.text,
+        'phone_number': phoneNumberController.text,
+        'address': addressController.text,
       }),
     );
 
     if (response.statusCode == 201) {
-      Navigator.pushNamed(context, LoginScreen.id);  // Powrót do ekranu logowania po rejestracji
+      Navigator.pop(context);
     } else {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: Text('Error'),
-          content: Text('Registration failed'),
+          content: Text('Failed to register user'),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -73,6 +73,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               decoration: InputDecoration(hintText: 'Last Name'),
             ),
             TextField(
+              controller: phoneNumberController,
+              decoration: InputDecoration(hintText: 'Phone Number'),
+            ),
+            TextField(
+              controller: addressController,
+              decoration: InputDecoration(hintText: 'Address'),
+            ),
+            TextField(
               controller: emailController,
               decoration: InputDecoration(hintText: 'Email'),
             ),
@@ -81,26 +89,24 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               decoration: InputDecoration(hintText: 'Password'),
               obscureText: true,
             ),
-            TextField(
-              controller: phoneNumberController,
-              decoration: InputDecoration(hintText: 'Phone Number'),
-            ),
-            TextField(
-              controller: addressController,
-              decoration: InputDecoration(hintText: 'Address'),
+            DropdownButton<String>(
+              value: role,
+              onChanged: (String? newValue) {
+                setState(() {
+                  role = newValue!;
+                });
+              },
+              items: <String>['pacjent', 'dentysta']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
             ),
             SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: () {
-                registerUser(
-                  emailController.text,
-                  passwordController.text,
-                  firstNameController.text,
-                  lastNameController.text,
-                  phoneNumberController.text,
-                  addressController.text
-                );
-              },
+              onPressed: registerUser,
               child: Text('Register'),
             ),
           ],
