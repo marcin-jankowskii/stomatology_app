@@ -1,11 +1,9 @@
 import psycopg2
-from psycopg2 import sql
 
 host = "localhost"
 dbname = "dentistApp"
 user = "postgres"
 password = "admin"
-
 
 conn = psycopg2.connect(
     host=host,
@@ -13,7 +11,6 @@ conn = psycopg2.connect(
     user=user,
     password=password
 )
-
 
 cur = conn.cursor()
 
@@ -43,7 +40,7 @@ commands = [
         dentist_id INT REFERENCES Users(user_id),
         appointment_date TIMESTAMP NOT NULL,
         status VARCHAR(50) NOT NULL CHECK (status IN ('zaplanowana', 'odbyta, nieopłacona', 'odbyta, opłacona', 'odwołana')),
-        description TEXT,
+        description TEXT,  -- Dodanie kolumny description
         amount DECIMAL(10, 2)
     )
     """,
@@ -72,12 +69,14 @@ commands = [
     """,
     """
     ALTER TABLE Appointments ADD CONSTRAINT appointments_status_check CHECK (status IN ('zaplanowana', 'odbyta, nieopłacona', 'odbyta, opłacona', 'odwołana'));
+    """,
+    """
+    ALTER TABLE Appointments ADD COLUMN IF NOT EXISTS description TEXT;  -- Dodanie kolumny description
     """
 ]
 
 for command in commands:
     cur.execute(command)
-
 
 conn.commit()
 

@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 app = Flask(__name__)
 
 host = "localhost"
-dbname = "dentistApp2"
+dbname = "dentistApp"
 user = "postgres"
 password = "admin"
 
@@ -72,6 +72,45 @@ def get_dentists():
     
     dentist_list = [{"user_id": dentist[0], "first_name": dentist[1], "last_name": dentist[2]} for dentist in dentists]
     return jsonify(dentist_list)
+
+@app.route('/patients', methods=['GET'])
+def get_patients():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT u.user_id, p.first_name, p.last_name FROM Users u JOIN PersonalInfo p ON u.personal_info_id = p.personal_info_id WHERE u.role = 'pacjent'")
+    patients = cur.fetchall()
+    cur.close()
+    conn.close()
+    
+    patient_list = [{"user_id": patient[0], "first_name": patient[1], "last_name": patient[2]} for patient in patients]
+    return jsonify(patient_list)
+
+@app.route('/medical_records/<int:patient_id>', methods=['GET'])
+def get_medical_records(patient_id):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT r.record_id, r.description, r.date, d.first_name, d.last_name
+        FROM MedicalRecords r
+        JOIN Users u ON r.patient_id = u.user_id
+        JOIN PersonalInfo p ON u.personal_info_id = p.personal_info_id
+        JOIN Users d_user ON r.patient_id = d_user.user_id
+        JOIN PersonalInfo d ON d_user.personal_info_id = d.personal_info_id
+        WHERE r.patient_id = %s
+    """, (patient_id,))
+    records = cur.fetchall()
+    cur.close()
+    conn.close()
+    
+    medical_records = [{
+        "record_id": record[0],
+        "description": record[1],
+        "date": record[2].strftime('%Y-%m-%d %H:%M:%S'),
+        "dentist_first_name": record[3],
+        "dentist_last_name": record[4]
+    } for record in records]
+
+    return jsonify(medical_records)
 
 @app.route('/available_times/<int:dentist_id>/<date>', methods=['GET'])
 def get_available_times(dentist_id, date):
@@ -196,6 +235,14 @@ def update_appointment():
     conn = get_db_connection()
     cur = conn.cursor()
 
+    # Pobierz istniejące szczegóły wizyty
+    cur.execute("SELECT patient_id, dentist_id, appointment_date FROM Appointments WHERE appointment_id = %s", (appointment_id,))
+    appointment = cur.fetchone()
+    if not appointment:
+        return jsonify({"message": "Appointment not found"}), 404
+
+    patient_id, dentist_id, appointment_date = appointment
+
     # Aktualizacja wizyty
     cur.execute("""
         UPDATE Appointments
@@ -220,6 +267,12 @@ def update_appointment():
             INSERT INTO Payments (appointment_id, amount, payment_date, status)
             VALUES (%s, %s, %s, %s)
         """, (appointment_id, amount, datetime.now(), 'opłacona'))
+
+    # Dodanie do MedicalRecords
+    cur.execute("""
+        INSERT INTO MedicalRecords (patient_id, description, date)
+        VALUES (%s, %s, %s)
+    """, (patient_id, description, appointment_date))
 
     conn.commit()
     cur.close()

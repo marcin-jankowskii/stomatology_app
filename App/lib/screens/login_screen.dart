@@ -89,12 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
               },
               child: Text('Login'),
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, RegistrationScreen.id);
-              },
-              child: Text('Register'),
-            ),
+ 
           ],
         ),
       ),

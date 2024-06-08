@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'appointment_screen.dart';
 import 'registration_screen.dart';
+import 'patient_list_screen.dart';
 
 class DentistMenuScreen extends StatelessWidget {
   static const String id = 'dentist_menu_screen';
@@ -44,6 +45,16 @@ class DentistMenuScreen extends StatelessWidget {
                 Navigator.pushNamed(context, RegistrationScreen.id);
               },
               child: Text('Add User'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  PatientListScreen.id,
+                  arguments: userId,
+                );
+              },
+              child: Text('View Patients'),
             ),
             // Dodaj inne opcje menu dla dentystów
           ],

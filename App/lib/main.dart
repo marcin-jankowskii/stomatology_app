@@ -8,6 +8,8 @@ import 'screens/schedule_appointment_screen.dart';
 import 'screens/appointment_details_screen.dart';
 import 'screens/appointment_update_screen.dart';
 import 'screens/payment_history_screen.dart';
+import 'screens/patient_list_screen.dart';
+import 'screens/medical_records_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -78,6 +80,20 @@ class MyApp extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) {
               return PaymentHistoryScreen(userId: userId);
+            },
+          );
+        } else if (settings.name == PatientListScreen.id) {
+          final userId = settings.arguments as int;
+          return MaterialPageRoute(
+            builder: (context) {
+              return PatientListScreen();
+            },
+          );
+        } else if (settings.name == MedicalRecordsScreen.id) {
+          final patientId = settings.arguments as int;
+          return MaterialPageRoute(
+            builder: (context) {
+              return MedicalRecordsScreen(patientId: patientId);
             },
           );
         }
