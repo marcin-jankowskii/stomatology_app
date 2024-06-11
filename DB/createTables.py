@@ -39,13 +39,9 @@ commands = [
         patient_id INT REFERENCES Users(user_id),
         dentist_id INT REFERENCES Users(user_id),
         appointment_date TIMESTAMP NOT NULL,
-<<<<<<< Updated upstream
-        status VARCHAR(50) NOT NULL CHECK (status IN ('zaplanowana', 'odbyta', 'odwołana'))
-=======
         status VARCHAR(50) NOT NULL CHECK (status IN ('zaplanowana', 'odbyta, nieopłacona', 'odbyta, opłacona', 'odwołana')),
         description TEXT,  -- Dodanie kolumny description
         amount DECIMAL(10, 2)
->>>>>>> Stashed changes
     )
     """,
     """
@@ -64,8 +60,6 @@ commands = [
         payment_date TIMESTAMP NOT NULL,
         status VARCHAR(50) NOT NULL CHECK (status IN ('opłacona', 'nieopłacona'))
     )
-<<<<<<< Updated upstream
-=======
     """,
     """
     ALTER TABLE Appointments ADD COLUMN IF NOT EXISTS amount DECIMAL(10, 2);
@@ -78,7 +72,6 @@ commands = [
     """,
     """
     ALTER TABLE Appointments ADD COLUMN IF NOT EXISTS description TEXT;  -- Dodanie kolumny description
->>>>>>> Stashed changes
     """
 ]
 

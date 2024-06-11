@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import psycopg2
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -17,7 +18,6 @@ def get_db_connection():
     )
     return conn
 
-#edff
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
@@ -26,13 +26,14 @@ def login():
     
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM Users WHERE email = %s AND password = %s", (email, password))
+    cur.execute("SELECT user_id, role FROM Users WHERE email = %s AND password = %s", (email, password))
     user = cur.fetchone()
     cur.close()
     conn.close()
     
     if user:
-        return jsonify({"message": "Login successful", "user_id": user[0]}), 200
+        user_id, role = user
+        return jsonify({"message": "Login successful", "user_id": user_id, "role": role}), 200
     else:
         return jsonify({"message": "Invalid credentials"}), 401
 
@@ -60,8 +61,6 @@ def register():
     
     return jsonify({"message": "User registered successfully"}), 201
 
-<<<<<<< Updated upstream
-=======
 @app.route('/dentists', methods=['GET'])
 def get_dentists():
     conn = get_db_connection()
@@ -310,6 +309,5 @@ def get_payment_history(patient_id):
 
     return jsonify(payment_history)
 
->>>>>>> Stashed changes
 if __name__ == '__main__':
     app.run(debug=True)
