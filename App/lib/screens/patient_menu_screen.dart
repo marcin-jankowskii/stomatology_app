@@ -12,7 +12,7 @@ class PatientMenuScreen extends StatelessWidget {
 
   PatientMenuScreen({required this.userId, required this.role});
 
-  @override
+   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -26,44 +26,101 @@ class PatientMenuScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  AppointmentScreen.id,
-                  arguments: {'userId': userId, 'role': role},
-                );
-              },
-              child: Text('View Appointments'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ScheduleAppointmentScreen(userId: userId),
+      body: Column(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    AppointmentScreen.id,
+                    arguments: {'userId': userId, 'role': role},
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 62, 189, 196),
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
-                );
-              },
-              child: Text('Schedule Appointment'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => PaymentHistoryScreen(userId: userId),
+                  child: Center(
+                    child: Text(
+                      'View Appointments',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                );
-              },
-              child: Text('Payment History'),
+                ),
+              ),
             ),
-          ],
-        ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ScheduleAppointmentScreen(userId: userId),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 62, 189, 196),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Schedule Appointment',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PaymentHistoryScreen(userId: userId),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 62, 189, 196),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Payment History',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
