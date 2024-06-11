@@ -6,6 +6,7 @@ class MedicalRecordsScreen extends StatefulWidget {
   static const String id = 'medical_records_screen';
 
   final int patientId;
+  //
 
   MedicalRecordsScreen({required this.patientId});
 
