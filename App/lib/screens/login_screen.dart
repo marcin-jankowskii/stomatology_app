@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'registration_screen.dart';
 import 'patient_menu_screen.dart';
 import 'dentist_menu_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
-  
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -27,12 +26,11 @@ class _LoginScreenState extends State<LoginScreen> {
         'password': password,
       }),
     );
-
     if (response.statusCode == 200) {
       final responseBody = jsonDecode(response.body);
       final userId = responseBody['user_id'];
       final role = responseBody['role'];
-      
+
       if (role == 'pacjent') {
         Navigator.pushReplacementNamed(
           context,
@@ -63,16 +61,38 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white, // Set background color to white
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text(
+          'Login',
+          style: TextStyle(color: Colors.white), // Set "Login" text color to white
+        ),
+        backgroundColor: Color.fromARGB(2255, 62, 189, 196), // Set AppBar background color
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            SizedBox(height: 60.0),
+            // Add App Name
+            Text(
+              'DentApp',
+              style: TextStyle(
+                fontSize: 36.0, // Increase font size
+                color: Color.fromARGB(2255, 62, 189, 196), // Lighter aquamarine-like color
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 20.0),
+            // Add Logo
+            Image.asset(
+              'assets/logo.jpg',
+              height: 150.0,
+            ),
+            SizedBox(height: 20.0),
             TextField(
               controller: emailController,
               decoration: InputDecoration(hintText: 'Email'),
@@ -87,9 +107,14 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: () {
                 loginUser(emailController.text, passwordController.text);
               },
-              child: Text('Login'),
+              child: Text(
+                'Login',
+                style: TextStyle(color: Colors.white), // Set button text color to white
+              ), 
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 72, 206, 213), // More blueish turquoise color
+              ),
             ),
- 
           ],
         ),
       ),
